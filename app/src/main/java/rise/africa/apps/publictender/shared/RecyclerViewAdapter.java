@@ -1,6 +1,9 @@
 package rise.africa.apps.publictender.shared;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rise.africa.apps.publictender.R;
+import rise.africa.apps.publictender.ReaderActivity;
 import rise.africa.apps.publictender.ui.home.HomeFragment;
 
 /**
@@ -58,19 +62,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
      * Provides a reference to each view in the menu item view.
      */
     public class MenuItemViewHolder extends RecyclerView.ViewHolder {
-        private TextView menuItemName;
-        private TextView menuItemDescription;
-        private TextView menuItemPrice;
-        private TextView menuItemCategory;
-        private ImageView menuItemImage;
+        private TextView menuItemTitle;
+        private TextView menuItemSource;
+        private TextView menuItemIsOpen;
+        private TextView menuItemPublishedDate;
 
         MenuItemViewHolder(View view) {
             super(view);
-            menuItemImage = view.findViewById(R.id.menu_item_image);
-            menuItemName = view.findViewById(R.id.menu_item_name);
-            menuItemPrice = view.findViewById(R.id.menu_item_price);
-            menuItemCategory = view.findViewById(R.id.menu_item_category);
-            menuItemDescription = view.findViewById(R.id.menu_item_description);
+            menuItemTitle = view.findViewById(R.id.menu_item_title);
+            menuItemIsOpen = view.findViewById(R.id.menu_item_is_open);
+            menuItemPublishedDate = view.findViewById(R.id.menu_item_published_date);
+            menuItemSource = view.findViewById(R.id.menu_item_source);
         }
         public void addItems(List<Object> postItems) {
             recyclerViewItems.addAll(postItems);
@@ -175,17 +177,31 @@ System.out.println("position IS " +position+"  getItemCount() "+ getItemCount())
                 MenuItemViewHolder menuItemHolder = (MenuItemViewHolder) holder;
                 TenderItem tenderItem = (TenderItem) recyclerViewItems.get(position);
 
-                // Get the menu item image resource ID.
-                String imageName = tenderItem.getImageName();
-                int imageResID = context.getResources().getIdentifier(imageName, "drawable",
-                        context.getPackageName());
-
                 // Add the menu item details to the menu item view.
-                menuItemHolder.menuItemImage.setImageResource(imageResID);
-                menuItemHolder.menuItemName.setText(tenderItem.getName());
-                menuItemHolder.menuItemPrice.setText(tenderItem.getPrice());
-                menuItemHolder.menuItemCategory.setText(tenderItem.getCategory());
-                menuItemHolder.menuItemDescription.setText(tenderItem.getDescription());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    menuItemHolder.menuItemTitle.setText(Html.fromHtml(tenderItem.getTitle(), Html.FROM_HTML_MODE_COMPACT));
+                } else {
+                    menuItemHolder.menuItemTitle.setText(Html.fromHtml(tenderItem.getTitle()));
+                }
+                menuItemHolder.menuItemIsOpen.setText(tenderItem.getIs_open());
+                menuItemHolder.menuItemPublishedDate.setText(tenderItem.getPublished_date());
+                menuItemHolder.menuItemSource.setText(tenderItem.getSource());
+
+                menuItemHolder.menuItemTitle.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+//                        System.out.println("chosed tender id is "+tenderItem.getId());
+
+                        Intent intent = new Intent(context, ReaderActivity.class);
+                        intent.putExtra("id", tenderItem.getId());
+                        intent.putExtra("title", tenderItem.getTitle());
+                        intent.putExtra("is_open", tenderItem.getIs_open());
+                        intent.putExtra("published_date", tenderItem.getPublished_date());
+                        intent.putExtra("source", tenderItem.getSource());
+                        context.startActivity(intent);
+                    }
+                });
                 break;
             case LOADER_VIEW_TYPE:
                 break;

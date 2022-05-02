@@ -6,38 +6,37 @@ package rise.africa.apps.publictender.shared;
  */
 public class TenderItem {
 
-    private final String name;
-    private final String description;
-    private final String price;
-    private final String category;
-    private final String imageName;
+    private final String id;
+    private final String title;
+    private final String source;
+    private final String is_open;
+    private final String published_date;
 
-    public TenderItem(String name, String description, String price, String category,
-                      String imageName) {
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.category = category;
-        this.imageName = imageName;
+    public TenderItem(String id, String title, String source, String is_open, String published_date) {
+        this.id = id;
+        this.title = title;
+        this.source = source;
+        this.is_open = is_open;
+        this.published_date = published_date;
     }
 
-    public String getName() {
-        return name;
+    public String getId() {
+        return id;
+    }
+    public String getTitle() {
+        return title;
     }
 
-    public String getDescription() {
-        return description;
+    public String getSource() {
+        return source;
     }
 
-    public String getPrice() {
-        return price;
+    public String getIs_open() {
+        return is_open;
     }
 
-    public String getCategory() {
-        return category;
+    public String getPublished_date() {
+        return published_date;
     }
 
-    public String getImageName() {
-        return imageName;
-    }
 }

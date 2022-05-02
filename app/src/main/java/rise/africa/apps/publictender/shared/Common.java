@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -41,6 +42,31 @@ public class Common {
     private static final String AD_UNIT_ID = "ca-app-pub-3940256099942544/4177191030";
     public boolean isLoading = false;
 
+    public void getTenderDetail(Context context, String id, TextView description){
+
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(context);
+        String url = "https://192.168.0.27:8082/wp/ds/wp-json/ds_tender/v1/tender/" + id;
+
+// Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+                        System.out.println("work! " + response);
+                        description.setText(response);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.println("That didn't work! " + error);
+            }
+        });
+
+// Add the request to the RequestQueue.
+        queue.add(stringRequest);
+    }
     public void updateTenders(Context context, RecyclerView.Adapter<RecyclerView.ViewHolder> adapter){
         handleSSLHandshake();
 
@@ -91,7 +117,7 @@ public class Common {
                 // looping through All Contacts
                 for (int i = 0; i < datas.length(); i++) {
                     JSONObject c = datas.getJSONObject(i);
-                    TenderItem tenderItem = new TenderItem(c.getString("title"), c.getString("closing_date"), null, null, "menu_item_image");
+                    TenderItem tenderItem = new TenderItem(c.getString("id"), c.getString("title"), c.getString("closing_date"), "open", "pub date");
                     items.add(tenderItem);
                 }
 if(datas.length()<PaginationListener.PAGE_SIZE) {
