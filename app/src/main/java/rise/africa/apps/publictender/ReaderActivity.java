@@ -69,9 +69,9 @@ public class ReaderActivity extends AppCompatActivity {
         published_date = getIntent().getStringExtra("published_date");
         source = getIntent().getStringExtra("source");
 
-        setter(title, published_date);
+        common.setter(this, title, published_date, desc);
 
-        common.getTenderDetail(getApplicationContext(), id, desc);
+        common.getTenderDetail(this, id, desc, tv, progressBar, title);
 
         btnRetry = (Button) findViewById(R.id.btnRetry);
 
@@ -79,7 +79,7 @@ public class ReaderActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                common.getTenderDetail(getApplicationContext(), id, desc);
+                common.getTenderDetail(getParent(), id, desc, tv, progressBar, title);
                 tv.setVisibility(View.VISIBLE);
                 btnRetry.setVisibility(View.INVISIBLE);
 
@@ -89,18 +89,4 @@ public class ReaderActivity extends AppCompatActivity {
 
     }
 
-    private void setter(String title, String content) {
-        try{
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                setTitle(Html.fromHtml(title, Html.FROM_HTML_MODE_COMPACT));
-                desc.setText(Html.fromHtml("<b>"+title+"</b><br/><br/>"+content.trim(), Html.FROM_HTML_MODE_COMPACT));
-            } else {
-                setTitle(Html.fromHtml(title));
-                desc.setText(Html.fromHtml(title+"<br/><br/>"+content.trim()));
-            }
-
-//            checkBookmark(id);
-        }catch (Exception ds){}
-
-    }
 }

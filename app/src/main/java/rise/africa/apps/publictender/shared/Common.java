@@ -1,13 +1,19 @@
 package rise.africa.apps.publictender.shared;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.os.Handler;
+import android.text.Html;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -27,7 +33,9 @@ import org.json.JSONObject;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -41,12 +49,14 @@ public class Common {
     public int OFFSET = 0;
     private static final String AD_UNIT_ID = "ca-app-pub-3940256099942544/4177191030";
     public boolean isLoading = false;
+    String BASE_URL = "https://192.168.0.29:8082/wp/ds/wp-json/ds_tender/";
+    String USERNAME = "test", PAZZWORD = "QQ!!qq11";
 
-    public void getTenderDetail(Context context, String id, TextView description){
+    public void getTenderDetail(Activity activity, String id, TextView description, TextView tv, ProgressBar progressBar, String title){
 
         // Instantiate the RequestQueue.
-        RequestQueue queue = Volley.newRequestQueue(context);
-        String url = "https://192.168.0.27:8082/wp/ds/wp-json/ds_tender/v1/tender/" + id;
+        RequestQueue queue = Volley.newRequestQueue(activity.getApplicationContext());
+        String url = BASE_URL+"v1/tender/" + id;
 
 // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -54,15 +64,27 @@ public class Common {
                     @Override
                     public void onResponse(String response) {
                         // Display the first 500 characters of the response string.
-                        System.out.println("work! " + response);
-                        description.setText(response);
+//                        System.out.println("work! " + response);
+//                        description.setText(response);
+                        parseTenderDetailJson(activity,response,description, tv, progressBar, title);
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 System.out.println("That didn't work! " + error);
             }
-        });
+        })
+
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("username", USERNAME);
+                params.put("password", PAZZWORD);
+
+                return params;
+            }
+        };
 
 // Add the request to the RequestQueue.
         queue.add(stringRequest);
@@ -77,7 +99,7 @@ public class Common {
         public void run() {
             // Instantiate the RequestQueue.
             RequestQueue queue = Volley.newRequestQueue(context);
-            String url = "https://192.168.0.27:8082/wp/ds/wp-json/ds_tender/v1/tenders/" +
+            String url = BASE_URL+"v1/tenders/" +
                     (OFFSET * PaginationListener.PAGE_SIZE) + "/" + PaginationListener.PAGE_SIZE + "/35,39,25,52,89,91,88,96,100,83,84";
 
 // Request a string response from the provided URL.
@@ -95,7 +117,18 @@ public class Common {
                 public void onErrorResponse(VolleyError error) {
                     System.out.println("That didn't work! " + error);
                 }
-            });
+            })
+
+            {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String>  params = new HashMap<String, String>();
+                    params.put("username", USERNAME);
+                    params.put("password", PAZZWORD);
+
+                    return params;
+                }
+            };
 
 // Add the request to the RequestQueue.
             queue.add(stringRequest);
@@ -117,20 +150,42 @@ public class Common {
                 // looping through All Contacts
                 for (int i = 0; i < datas.length(); i++) {
                     JSONObject c = datas.getJSONObject(i);
-                    TenderItem tenderItem = new TenderItem(c.getString("id"), c.getString("title"), c.getString("closing_date"), "open", "pub date");
+                    TenderItem tenderItem = new TenderItem(c.getString("id"), c.getString("title"), c.getString("closing_date"), "open", c.getString("source_name"));
                     items.add(tenderItem);
                 }
-if(datas.length()<PaginationListener.PAGE_SIZE) {
-    OFFSET = -100;
-}
-if (items.size()>0) {
-    items = addBannerAds(items, context);
-    ((RecyclerViewAdapter) adapter).addItems(items);
-    loadBannerAds(items);
+                if(datas.length()<PaginationListener.PAGE_SIZE) {
+                    OFFSET = -100;
+                }
+                if (items.size()>0) {
+                    items = addBannerAds(items, context);
+                    ((RecyclerViewAdapter) adapter).addItems(items);
+                    loadBannerAds(items);
 //            loadBannerAds(items);
-}
+                }
             } catch (final JSONException e) {
-                                  System.out.println("Json parsing error on common update tender: " + e.getMessage());
+                System.out.println("Json parsing error on common update tender: " + e.getMessage());
+            }
+
+        }
+
+    }
+    public void parseTenderDetailJson(Activity activity, String jsonString, TextView description, TextView tv, ProgressBar progressBar, String title){
+
+        if (jsonString != null) {
+            List<Object> items = new ArrayList<>();
+            try {
+                JSONObject jsonObj = new JSONObject(jsonString);
+
+                // Getting JSON Array node
+                JSONObject data = jsonObj.getJSONObject("tender");
+                if(data.has("content")) {
+                    setter(activity, title, data.getString("content"), description);
+
+                    tv.setVisibility(View.INVISIBLE);
+                    progressBar.setVisibility(View.INVISIBLE);
+                }
+            } catch (final JSONException e) {
+                System.out.println("Json parsing error on common update tender: " + e.getMessage());
             }
 
         }
@@ -242,5 +297,20 @@ if (items.size()>0) {
             });
         } catch (Exception ignored) {
         }
+    }
+
+    public void setter(Activity activity, String title, String content, TextView desc) {
+        try{
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                activity.setTitle(Html.fromHtml(title, Html.FROM_HTML_MODE_COMPACT));
+                desc.setText(Html.fromHtml("<b>"+title+"</b><br/><br/>"+content.trim(), Html.FROM_HTML_MODE_COMPACT));
+            } else {
+                activity.setTitle(Html.fromHtml(title));
+                desc.setText(Html.fromHtml(title+"<br/><br/>"+content.trim()));
+            }
+
+//            checkBookmark(id);
+        }catch (Exception ds){}
+
     }
 }
