@@ -30,7 +30,7 @@
                 />
 
             <TextView
-                android:id="@+id/menu_item_published_date"
+                android:id="@+id/item_source"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="8dp"
@@ -38,7 +38,7 @@
                 android:layout_toRightOf="@+id/menu_item_is_open" />
 
             <TextView
-                android:id="@+id/menu_item_source"
+                android:id="@+id/item_closing_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="8dp"

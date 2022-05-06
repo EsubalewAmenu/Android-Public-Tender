@@ -49,7 +49,7 @@ public class Common {
     public int OFFSET = 0;
     private static final String AD_UNIT_ID = "ca-app-pub-3940256099942544/4177191030";
     public boolean isLoading = false;
-    String BASE_URL = "https://192.168.0.29:8082/wp/ds/wp-json/ds_tender/";
+    String BASE_URL = "https://192.168.0.27:8082/wp/ds/wp-json/ds_tender/";
     String USERNAME = "test", PAZZWORD = "QQ!!qq11";
 
     public void getTenderDetail(Activity activity, String id, TextView description, TextView tv, ProgressBar progressBar, String title){
@@ -108,7 +108,7 @@ public class Common {
                         @Override
                         public void onResponse(String response) {
                             // Display the first 500 characters of the response string.
-                            System.out.println("work! " + response);
+//                            System.out.println("work! " + response);
                             parseTendersJson(context, response, adapter);
                             OFFSET++;
                         }
@@ -150,7 +150,7 @@ public class Common {
                 // looping through All Contacts
                 for (int i = 0; i < datas.length(); i++) {
                     JSONObject c = datas.getJSONObject(i);
-                    TenderItem tenderItem = new TenderItem(c.getString("id"), c.getString("title"), c.getString("closing_date"), "open", c.getString("source_name"));
+                    TenderItem tenderItem = new TenderItem(c.getString("id"), c.getString("title"), c.getString("source_name"), c.getString("tender_status"), c.getString("closing_date"), c.getString("days_left"));
                     items.add(tenderItem);
                 }
                 if(datas.length()<PaginationListener.PAGE_SIZE) {

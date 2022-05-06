@@ -34,6 +34,10 @@
                                     android:layout_height="match_parent"
                                     android:orientation="vertical">
 
+                                    <TextView android:textSize="14sp" android:id="@+id/tender_status"
+                                        android:layout_width="wrap_content" android:layout_height="match_parent" android:layout_margin="10dp"
+                                        android:lineSpacingMultiplier="1.2" />
+
                                     <TextView android:textSize="20sp" android:id="@+id/desc" android:focusable="true"
                                         android:longClickable="true" android:layout_width="wrap_content" android:layout_height="match_parent" android:layout_margin="10dp"
                                         android:lineSpacingMultiplier="1.2" android:textIsSelectable="true"/>

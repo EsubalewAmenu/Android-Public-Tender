@@ -10,14 +10,16 @@ public class TenderItem {
     private final String title;
     private final String source;
     private final String is_open;
-    private final String published_date;
+    private final String closing_date;
+    private final String days_left;
 
-    public TenderItem(String id, String title, String source, String is_open, String published_date) {
+    public TenderItem(String id, String title, String source, String is_open, String closing_date, String days_left) {
         this.id = id;
         this.title = title;
         this.source = source;
         this.is_open = is_open;
-        this.published_date = published_date;
+        this.closing_date = closing_date;
+        this.days_left = days_left;
     }
 
     public String getId() {
@@ -35,8 +37,11 @@ public class TenderItem {
         return is_open;
     }
 
-    public String getPublished_date() {
-        return published_date;
+    public String getClosing_date() {
+        return closing_date;
+    }
+    public String getDays_left() {
+        return days_left;
     }
 
 }

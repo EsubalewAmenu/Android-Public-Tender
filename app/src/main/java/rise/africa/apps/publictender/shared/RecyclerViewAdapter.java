@@ -2,6 +2,7 @@ package rise.africa.apps.publictender.shared;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -65,14 +66,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         private TextView menuItemTitle;
         private TextView menuItemSource;
         private TextView menuItemIsOpen;
-        private TextView menuItemPublishedDate;
+        private TextView menuItemClosingDate;
 
         MenuItemViewHolder(View view) {
             super(view);
             menuItemTitle = view.findViewById(R.id.menu_item_title);
             menuItemIsOpen = view.findViewById(R.id.menu_item_is_open);
-            menuItemPublishedDate = view.findViewById(R.id.menu_item_published_date);
-            menuItemSource = view.findViewById(R.id.menu_item_source);
+            menuItemClosingDate = view.findViewById(R.id.item_closing_date);
+            menuItemSource = view.findViewById(R.id.item_source);
         }
         public void addItems(List<Object> postItems) {
             recyclerViewItems.addAll(postItems);
@@ -183,9 +184,17 @@ System.out.println("position IS " +position+"  getItemCount() "+ getItemCount())
                 } else {
                     menuItemHolder.menuItemTitle.setText(Html.fromHtml(tenderItem.getTitle()));
                 }
-                menuItemHolder.menuItemIsOpen.setText(tenderItem.getIs_open());
-                menuItemHolder.menuItemPublishedDate.setText(tenderItem.getPublished_date());
-                menuItemHolder.menuItemSource.setText(tenderItem.getSource());
+                menuItemHolder.menuItemIsOpen.setText("This tender is "+tenderItem.getIs_open());
+                menuItemHolder.menuItemSource.setText("Published on " + tenderItem.getSource());
+
+                if (tenderItem.getIs_open().equals("Open")) {
+                    menuItemHolder.menuItemClosingDate.setText("Will be closed on : " + tenderItem.getClosing_date() + " ( " + tenderItem.getDays_left() + " Days left)");
+                    menuItemHolder.menuItemIsOpen.setTextColor(Color.rgb(0, 255, 0));
+                }
+                else{
+                    menuItemHolder.menuItemClosingDate.setText("Closed at : "+tenderItem.getClosing_date());
+                menuItemHolder.menuItemIsOpen.setTextColor(Color.rgb(255, 0, 0));
+        }
 
                 menuItemHolder.menuItemTitle.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -197,8 +206,9 @@ System.out.println("position IS " +position+"  getItemCount() "+ getItemCount())
                         intent.putExtra("id", tenderItem.getId());
                         intent.putExtra("title", tenderItem.getTitle());
                         intent.putExtra("is_open", tenderItem.getIs_open());
-                        intent.putExtra("published_date", tenderItem.getPublished_date());
                         intent.putExtra("source", tenderItem.getSource());
+                        intent.putExtra("closing_date", tenderItem.getClosing_date());
+                        intent.putExtra("days_left", tenderItem.getDays_left());
                         context.startActivity(intent);
                     }
                 });

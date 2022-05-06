@@ -15,9 +15,9 @@ import rise.africa.apps.publictender.shared.Common;
 
 public class ReaderActivity extends AppCompatActivity {
 
-    private TextView desc, tv;
+    private TextView desc, tv, tender_status;
     public ProgressBar progressBar;
-    String id, title, is_open, published_date, source;
+    String id, title, is_open, closing_date, source, status, days_left;
     Button btnRetry;
     Common common = new Common();
 
@@ -32,7 +32,8 @@ public class ReaderActivity extends AppCompatActivity {
 
         tv = (TextView) findViewById(R.id.tvWait);
 
-        desc = (TextView) findViewById(R.id.desc);
+                desc = (TextView) findViewById(R.id.desc);
+        tender_status = (TextView) findViewById(R.id.tender_status);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         zoomIn = (ImageButton) findViewById(R.id.zoom_in);
@@ -66,10 +67,18 @@ public class ReaderActivity extends AppCompatActivity {
         id = getIntent().getStringExtra("id");
         title = getIntent().getStringExtra("title");
         is_open = getIntent().getStringExtra("is_open");
-        published_date = getIntent().getStringExtra("published_date");
+        closing_date = getIntent().getStringExtra("closing_date");
         source = getIntent().getStringExtra("source");
+        status = getIntent().getStringExtra("is_open");
+        days_left = getIntent().getStringExtra("days_left");
 
-        common.setter(this, title, published_date, desc);
+        tender_status.setText("This tender is "+status+ " Published on " + source+"\n");
+        if (status.equals("Open"))
+            tender_status.append("Will be closed on : " +closing_date + " ( "+ days_left+" Days left)");
+        else
+            tender_status.append("Closed at : "+closing_date);
+
+        common.setter(this, title, closing_date, desc);
 
         common.getTenderDetail(this, id, desc, tv, progressBar, title);
 
