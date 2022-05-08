@@ -44,7 +44,6 @@ public class HomeFragment extends Fragment {
 
     // A banner ad is placed in every 8th position in the RecyclerView.
     public static final int ITEMS_PER_AD = 8;
-    private static final String AD_UNIT_ID = "ca-app-pub-3940256099942544/4177191030";
     // The RecyclerView that holds and displays banner ads and menu items.
     private RecyclerView recyclerView;
     // List of banner ads and MenuItems that populate the RecyclerView.

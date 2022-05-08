@@ -2,8 +2,8 @@
     <string name="app_name">Public Tender</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">Public Tender</string>
+    <string name="nav_header_subtitle">Brought to you by ME Computing</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
@@ -20,5 +20,8 @@
     <string name="action_rate">Rate us</string>
     <string name="action_store">App Store</string>
     <string name="exit">Exit</string>
+
     <string name="adreader_banner">ca-app-pub-3940256099942544/4177191030</string>
+    <string name="home_adunit">ca-app-pub-3940256099942544/4177191030</string>
+
 </resources>

@@ -44,10 +44,11 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import rise.africa.apps.publictender.R;
+
 public class Common {
     public static final int ITEMS_PER_AD = 8;
     public int OFFSET = 0;
-    private static final String AD_UNIT_ID = "ca-app-pub-3940256099942544/4177191030";
     public boolean isLoading = false;
     String BASE_URL = "https://192.168.0.27:8082/wp/ds/wp-json/ds_tender/";
     String USERNAME = "test", PAZZWORD = "QQ!!qq11";
@@ -202,7 +203,7 @@ public class Common {
         for (int i = 0; i <= items.size(); i += ITEMS_PER_AD) {
             final AdView adView = new AdView(context);
             adView.setAdSize(AdSize.BANNER);
-            adView.setAdUnitId(AD_UNIT_ID);
+            adView.setAdUnitId(context.getString(R.string.home_adunit));
             items.add(i, adView);
         }
         return items;
