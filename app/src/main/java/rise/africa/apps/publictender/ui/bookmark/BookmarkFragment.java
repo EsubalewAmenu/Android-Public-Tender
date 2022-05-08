@@ -1,11 +1,6 @@
 package rise.africa.apps.publictender.ui.bookmark;
 
-import android.content.Context;
-import android.content.Intent;
-import android.database.SQLException;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,15 +11,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import rise.africa.apps.publictender.ReaderActivity;
 import rise.africa.apps.publictender.R;
 import rise.africa.apps.publictender.shared.DB;
 import rise.africa.apps.publictender.shared.RecyclerViewAdapter;
 import rise.africa.apps.publictender.shared.TenderItem;
-import rise.africa.apps.publictender.shared.RecyclerViewAdapter;
-
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 public class BookmarkFragment extends Fragment {
 
@@ -43,7 +35,23 @@ public class BookmarkFragment extends Fragment {
 
         recyclerviewRecentRecipe.setLayoutManager(recentRecipeVerticalLayout);
 
-        ArrayList<TenderItem> bookMarks = null;//db.getAllBookmarks();
+        Cursor res = db.getSelect("*", "bookmarks","1");
+
+        res.moveToFirst();
+        List<Object> bookMarks = new ArrayList<>();
+
+        while(res.isAfterLast() == false){
+            bookMarks.add(new TenderItem(
+                    res.getString(1),
+                    res.getString(2),
+                    res.getString(4),
+                    "unknown",
+                    res.getString(3),
+                    "0"
+            ));
+
+            res.moveToNext();
+        }
         if (bookMarks.size() == 0) {
 
             root = inflater.inflate(R.layout.no_bookmark, container, false);
@@ -55,7 +63,12 @@ public class BookmarkFragment extends Fragment {
         return root;
     }
 
-    private void setUpAdapter(ArrayList<TenderItem> bookMarks) {
+    private void setUpAdapter(List<Object> bookMarks) {
+        RecyclerView.Adapter<RecyclerView.ViewHolder> adapter;
+
+        adapter = new RecyclerViewAdapter(getContext(),
+                bookMarks);
+        recyclerviewRecentRecipe.setAdapter(adapter);
 //        recyclerviewRecentRecipe.setLayoutManager(recentRecipeVerticalLayout);
 
 //        adapterRecentRecipe = new RecyclerViewAdapter(bookMarks, new RecentRecipeAdapter.OnRecentRecipeItemListener() {
