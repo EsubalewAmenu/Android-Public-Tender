@@ -68,7 +68,7 @@ public class Common {
                         // Display the first 500 characters of the response string.
 //                        System.out.println("work! " + response);
 //                        description.setText(response);
-                        parseTenderDetailJson(activity,response,description, tv, progressBar, title);
+                        parseTenderDetailJson(activity, response,description, tv, progressBar, id, title);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -171,7 +171,7 @@ public class Common {
         }
 
     }
-    public void parseTenderDetailJson(Activity activity, String jsonString, TextView description, TextView tv, ProgressBar progressBar, String title){
+    public void parseTenderDetailJson(Activity activity, String jsonString, TextView description, TextView tv, ProgressBar progressBar, String id, String title){
 
         if (jsonString != null) {
             List<Object> items = new ArrayList<>();
@@ -181,7 +181,7 @@ public class Common {
                 // Getting JSON Array node
                 JSONObject data = jsonObj.getJSONObject("tender");
                 if(data.has("content")) {
-                    setter(activity, title, data.getString("content"), description);
+                    setter(activity, id, title, data.getString("content"), description);
 
                     tv.setVisibility(View.INVISIBLE);
                     progressBar.setVisibility(View.INVISIBLE);
@@ -301,7 +301,7 @@ public class Common {
         }
     }
 
-    public void setter(Activity activity, String title, String content, TextView desc) {
+    public void setter(Activity activity, String tenderId, String title, String content, TextView desc) {
         try{
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 activity.setTitle(Html.fromHtml(title, Html.FROM_HTML_MODE_COMPACT));
@@ -311,7 +311,7 @@ public class Common {
                 desc.setText(Html.fromHtml(title+"<br/><br/>"+content.trim()));
             }
 
-//            checkBookmark(id);
+//            checkBookmark(tenderId);
         }catch (Exception ds){}
 
     }

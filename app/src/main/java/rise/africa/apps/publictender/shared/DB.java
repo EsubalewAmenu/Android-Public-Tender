@@ -6,6 +6,7 @@ package rise.africa.apps.publictender.shared;
  * Email esubalew.a2009@gmail.com/
  */
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -129,4 +130,21 @@ public Cursor getSelect(String select, String from, String where) {
 	return cursor;
 }
 
+	public Integer removeBookmark (String tenderId) {
+//		SQLiteDatabase db = this.getWritableDatabase();
+		return myDataBase.delete("bookmarks",
+				"tenderId = ? ",
+				new String[] { tenderId });
+	}
+
+	public boolean addBookmark (String tenderId, String title, String closing_date, String source) {
+//		SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues contentValues = new ContentValues();
+		contentValues.put("tenderId", tenderId);
+		contentValues.put("title", title);
+		contentValues.put("closing_date", closing_date);
+		contentValues.put("source", source);
+		myDataBase.insert("bookmarks", null, contentValues);
+		return true;
+	}
 }

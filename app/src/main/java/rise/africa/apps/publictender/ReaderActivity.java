@@ -2,6 +2,8 @@ package rise.africa.apps.publictender;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
@@ -10,8 +12,17 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import rise.africa.apps.publictender.shared.Common;
+import rise.africa.apps.publictender.shared.DB;
 
 public class ReaderActivity extends AppCompatActivity {
 
@@ -20,8 +31,11 @@ public class ReaderActivity extends AppCompatActivity {
     String id, title, is_open, closing_date, source, status, days_left;
     Button btnRetry;
     Common common = new Common();
+    FloatingActionButton bookmark, fab;
 
+    AdView mAdView;
 
+    DB db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +49,8 @@ public class ReaderActivity extends AppCompatActivity {
                 desc = (TextView) findViewById(R.id.desc);
         tender_status = (TextView) findViewById(R.id.tender_status);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
+        db = new DB(getApplicationContext());
 
         zoomIn = (ImageButton) findViewById(R.id.zoom_in);
         zoomOut = (ImageButton) findViewById(R.id.zoom_out);
@@ -66,7 +82,7 @@ public class ReaderActivity extends AppCompatActivity {
 
         id = getIntent().getStringExtra("id");
         title = getIntent().getStringExtra("title");
-        is_open = getIntent().getStringExtra("is_open");
+//        is_open = getIntent().getStringExtra("is_open");
         closing_date = getIntent().getStringExtra("closing_date");
         source = getIntent().getStringExtra("source");
         status = getIntent().getStringExtra("is_open");
@@ -78,7 +94,7 @@ public class ReaderActivity extends AppCompatActivity {
         else
             tender_status.append("Closed at : "+closing_date);
 
-        common.setter(this, title, closing_date, desc);
+        common.setter(this, id, title, closing_date, desc);
 
         common.getTenderDetail(this, id, desc, tv, progressBar, title);
 
@@ -95,7 +111,51 @@ public class ReaderActivity extends AppCompatActivity {
             }
         });
 
+        bookmark = (FloatingActionButton) findViewById(R.id.bookmark);
+        checkBookmark(id);
+        bookmark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (db.getSelect("*", "bookmarks", "tenderId="+id).moveToFirst()) {
+                    db.removeBookmark(id);
+                    bookmark.setImageResource(R.drawable.ic_un_bookmark);
+                    Toast.makeText(getApplicationContext(), "Bookmark Removed", Toast.LENGTH_SHORT).show();
+                } else if (db.addBookmark(id, title, closing_date, source)) {
+                    bookmark.setImageResource(R.drawable.ic_bookmark);
+                    Toast.makeText(getApplicationContext(), "Bookmark Added", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent("android.intent.action.SEND");
+                intent.setType("text/plain");
+                intent.putExtra("android.intent.extra.TEXT", "https://play.google.com/store/apps/details?id=" + ReaderActivity.this.getPackageName()+"\n\n" + title);
+                startActivity(Intent.createChooser(intent, "Share via"));
+            }
+        });
+
+
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
     }
 
+    public void checkBookmark(String tenderId) {
+        DB db = new DB(getApplicationContext());
+        if (db.getSelect("*", "bookmarks", "tenderId="+id).moveToFirst()) {//isBookmarked
+            bookmark.setImageResource(R.drawable.ic_bookmark);
+        }
+//        else {
+//            bookmark.setImageResource(R.drawable.ic_un_bookmark);
+//        }
+    }
 }
