@@ -102,7 +102,7 @@ public class Common {
                     // Instantiate the RequestQueue.
                     RequestQueue queue = Volley.newRequestQueue(context);
                     String url = BASE_URL+"v1/tenders/" +
-                            (OFFSET * PaginationListener.PAGE_SIZE) + "/" + PaginationListener.PAGE_SIZE + "/35,39,25,52,89,91,88,96,100,83,84";
+                            (OFFSET * PaginationListener.PAGE_SIZE) + "/" + PaginationListener.PAGE_SIZE + "/0,0";
 
 // Request a string response from the provided URL.
                     StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
