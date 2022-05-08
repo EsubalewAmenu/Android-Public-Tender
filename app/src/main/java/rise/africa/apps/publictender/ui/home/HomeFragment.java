@@ -67,14 +67,21 @@ Common common = new Common();
 
         recyclerView = root.findViewById(R.id.recycler_view);
         swipeRefresh = (SwipeRefreshLayout) root.findViewById(R.id.swipeRefresh);
-//        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//            @Override
-//            public void onRefresh() {
-//                // load more fron the api
-//        common.searchQuery = "";
-//        common.OFFSET = 0;
-//            }
-//        });
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // load more fron the api
+        common.searchQuery = "";
+        common.OFFSET = 0;
+        recyclerViewItems = new ArrayList<>();
+        adapter = new RecyclerViewAdapter(getContext(),
+                recyclerViewItems);
+        recyclerView.setAdapter(adapter);
+
+        common.updateTenders(getContext(), adapter);
+
+            }
+        });
         // Use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView.
         recyclerView.setHasFixedSize(true);
