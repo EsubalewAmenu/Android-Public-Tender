@@ -42,7 +42,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private final Context context;
 
     // The list of banner ads and menu items.
-    private final List<Object> recyclerViewItems;
+    public List<Object> recyclerViewItems;
 
     /**
      * For this example app, the recyclerViewItems list contains only

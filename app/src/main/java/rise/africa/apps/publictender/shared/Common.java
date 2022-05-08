@@ -52,6 +52,8 @@ public class Common {
     String BASE_URL = "https://192.168.0.27:8082/wp/ds/wp-json/ds_tender/";
     String USERNAME = "test", PAZZWORD = "QQ!!qq11";
 
+    public String searchQuery = "";
+
     public void getTenderDetail(Activity activity, String id, TextView description, TextView tv, ProgressBar progressBar, String title){
 
         // Instantiate the RequestQueue.
@@ -81,7 +83,6 @@ public class Common {
                 Map<String, String>  params = new HashMap<String, String>();
                 params.put("username", USERNAME);
                 params.put("password", PAZZWORD);
-
                 return params;
             }
         };
@@ -93,49 +94,50 @@ public class Common {
         handleSSLHandshake();
 
         if (OFFSET>-1) {
-    new Handler().postDelayed(new Runnable() {
+            new Handler().postDelayed(new Runnable() {
 
-        @Override
-        public void run() {
-            // Instantiate the RequestQueue.
-            RequestQueue queue = Volley.newRequestQueue(context);
-            String url = BASE_URL+"v1/tenders/" +
-                    (OFFSET * PaginationListener.PAGE_SIZE) + "/" + PaginationListener.PAGE_SIZE + "/35,39,25,52,89,91,88,96,100,83,84";
+                @Override
+                public void run() {
+                    // Instantiate the RequestQueue.
+                    RequestQueue queue = Volley.newRequestQueue(context);
+                    String url = BASE_URL+"v1/tenders/" +
+                            (OFFSET * PaginationListener.PAGE_SIZE) + "/" + PaginationListener.PAGE_SIZE + "/35,39,25,52,89,91,88,96,100,83,84";
 
 // Request a string response from the provided URL.
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            // Display the first 500 characters of the response string.
+                    StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                            new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    // Display the first 500 characters of the response string.
 //                            System.out.println("work! " + response);
-                            parseTendersJson(context, response, adapter);
-                            OFFSET++;
+                                    parseTendersJson(context, response, adapter);
+                                    OFFSET++;
+                                }
+                            }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            System.out.println("That didn't work! " + error);
                         }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    System.out.println("That didn't work! " + error);
-                }
-            })
+                    })
 
-            {
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String, String>  params = new HashMap<String, String>();
-                    params.put("username", USERNAME);
-                    params.put("password", PAZZWORD);
-
-                    return params;
-                }
-            };
+                    {
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            Map<String, String>  params = new HashMap<String, String>();
+                            params.put("username", USERNAME);
+                            params.put("password", PAZZWORD);
+                            if(!searchQuery.equals(""))
+                                params.put("search", searchQuery);
+                            return params;
+                        }
+                    };
 
 // Add the request to the RequestQueue.
-            queue.add(stringRequest);
-            isLoading = false;
+                    queue.add(stringRequest);
+                    isLoading = false;
+                }
+            }, 1500);
         }
-    }, 1500);
-}
     }
     public void parseTendersJson(Context context, String jsonString, RecyclerView.Adapter<RecyclerView.ViewHolder> adapter){
 

@@ -3,9 +3,12 @@ package rise.africa.apps.publictender.ui.home;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -54,9 +57,13 @@ Common common = new Common();
     public boolean isLastPage = false;
     private int totalPage = 10;
 
+    SearchView searchView;
+    MenuItem myActionMenuItem;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
+        setHasOptionsMenu(true);
 
         recyclerView = root.findViewById(R.id.recycler_view);
         swipeRefresh = (SwipeRefreshLayout) root.findViewById(R.id.swipeRefresh);
@@ -64,6 +71,8 @@ Common common = new Common();
 //            @Override
 //            public void onRefresh() {
 //                // load more fron the api
+//        common.searchQuery = "";
+//        common.OFFSET = 0;
 //            }
 //        });
         // Use this setting to improve performance if you know that changes
@@ -112,7 +121,43 @@ Common common = new Common();
 
         return root;
     }
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main, menu);
 
+
+        myActionMenuItem = menu.findItem( R.id.search);
+        searchView = (SearchView) myActionMenuItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // Toast like print
+                System.out.println("search query is on frag" + query);
+                common.searchQuery = query;
+                common.OFFSET = 0;
+
+                recyclerViewItems = new ArrayList<>();
+                adapter = new RecyclerViewAdapter(getContext(),
+                        recyclerViewItems);
+                recyclerView.setAdapter(adapter);
+
+                common.updateTenders(getContext(), adapter);
+
+                if( ! searchView.isIconified()) {
+                    searchView.setIconified(true);
+                }
+                myActionMenuItem.collapseActionView();
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String s) {
+                // UserFeedback.show( "SearchOnQueryTextChanged: " + s);
+                return false;
+            }
+        });
+
+        super.onCreateOptionsMenu(menu,inflater);
+    }
 
 
     private void addLoading() {
