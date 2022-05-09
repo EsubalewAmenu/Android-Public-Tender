@@ -34,7 +34,7 @@ public class BookmarkFragment extends Fragment {
         recentRecipeVerticalLayout = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
 
         recyclerviewRecentRecipe.setLayoutManager(recentRecipeVerticalLayout);
-
+        db = new DB(getContext());
         Cursor res = db.getSelect("*", "bookmarks","1");
 
         res.moveToFirst();
@@ -63,6 +63,10 @@ public class BookmarkFragment extends Fragment {
         return root;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
     private void setUpAdapter(List<Object> bookMarks) {
         RecyclerView.Adapter<RecyclerView.ViewHolder> adapter;
 
