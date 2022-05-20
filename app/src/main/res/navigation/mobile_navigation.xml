@@ -12,7 +12,7 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/nav_bookmark"
+        android:id="@+id/nav_bookmarks"
         android:name="rise.africa.apps.publictender.ui.bookmark.BookmarkFragment"
         android:label="@string/menu_bookmarks"
         tools:layout="@layout/fragment_bookmark" />
