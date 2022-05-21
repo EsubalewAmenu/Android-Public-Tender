@@ -50,8 +50,8 @@ public class Common {
     public static final int ITEMS_PER_AD = 8;
     public int OFFSET = 0;
     public boolean isLoading = false;
-    String BASE_URL = "https://192.168.0.27:8082/wp/ds/wp-json/ds_tender/";
-    String USERNAME = "test", PAZZWORD = "QQ!!qq11";
+    String BASE_URL = "https://datascienceplc.com/api/ds_tender/";
+    String USERNAME = "public-api-user", PAZZWORD = "public-api-password";
 
     public String searchQuery = "";
 
