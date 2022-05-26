@@ -20,9 +20,7 @@ import java.util.List;
 
 public class BookmarkFragment extends Fragment {
 
-    RecyclerView recyclerviewRecentRecipe;
-    LinearLayoutManager recentRecipeVerticalLayout;
-    RecyclerViewAdapter adapterRecentRecipe;
+    RecyclerView bookmark_recyclerView;
     DB db;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -30,13 +28,13 @@ public class BookmarkFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment_bookmark, container, false);
 
-        recyclerviewRecentRecipe = (RecyclerView) root.findViewById(R.id.recyclerView);
-        recentRecipeVerticalLayout = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        bookmark_recyclerView = (RecyclerView) root.findViewById(R.id.bookmark_recyclerView);
+        bookmark_recyclerView.setHasFixedSize(true);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
 
-        recyclerviewRecentRecipe.setLayoutManager(recentRecipeVerticalLayout);
+        bookmark_recyclerView.setLayoutManager(layoutManager);
         db = new DB(getContext());
         Cursor res = db.getSelect("*", "bookmarks","1");
-
         res.moveToFirst();
         List<Object> bookMarks = new ArrayList<>();
 
@@ -45,13 +43,14 @@ public class BookmarkFragment extends Fragment {
                     res.getString(1),
                     res.getString(2),
                     res.getString(4),
-                    "unknown",
+                    "bookmarked",
                     res.getString(3),
                     "0"
             ));
 
             res.moveToNext();
         }
+        System.out.println("test size dasf " + bookMarks.size());
         if (bookMarks.size() == 0) {
 
             root = inflater.inflate(R.layout.no_bookmark, container, false);
@@ -72,7 +71,7 @@ public class BookmarkFragment extends Fragment {
 
         adapter = new RecyclerViewAdapter(getContext(),
                 bookMarks);
-        recyclerviewRecentRecipe.setAdapter(adapter);
+        bookmark_recyclerView.setAdapter(adapter);
 //        recyclerviewRecentRecipe.setLayoutManager(recentRecipeVerticalLayout);
 
 //        adapterRecentRecipe = new RecyclerViewAdapter(bookMarks, new RecentRecipeAdapter.OnRecentRecipeItemListener() {
@@ -98,7 +97,7 @@ public class BookmarkFragment extends Fragment {
 
 
         // Set adapter on recycler view
-        recyclerviewRecentRecipe.setAdapter(adapterRecentRecipe);
+//        bookmark_recyclerView.setAdapter(adapter);
 
 
 //        adapterRecentRecipe.addItems(bookMarks);
